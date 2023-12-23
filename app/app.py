@@ -39,7 +39,7 @@ def desk_access(desk_rfid):
         data = cursor.fetchone()
     except sqlite3.Error as e:
         print(e)
-        return "Invalid Desk"
+        return render_template("InvalidDesk.html")
 
     # parse query result
     id = data[0]
@@ -63,9 +63,9 @@ def desk_access(desk_rfid):
 
 def get_desk_page(desk):
     if desk.desk_role_id == 1:
-        return render_template("admin_desk.html", desk=desk)
-    elif desk.roledesk_role_id == 2:
-        return render_template("user_desk.html", desk=desk)
+        return render_template("admin_desk.html", desk=desk.serialize())
+    elif desk.desk_role_id == 2:
+        return render_template("user_desk.html", desk=desk.serialize())
     else:
         return render_template(
             "guest_desk.html", desk=desk
