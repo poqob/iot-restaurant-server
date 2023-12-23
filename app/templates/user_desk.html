@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGB Color Picker</title>
+    <title>RGB Color Picker - Desk {{ desk.desk_id }}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap Switch CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/css/bootstrap3/bootstrap-switch.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="row">
@@ -20,8 +25,15 @@
             </div>
             <div class="col-md-6">
                 <h2>Actions</h2>
-                <button id="callWaiterBtn" class="btn btn-light" onclick="toggleColor('callWaiterBtn')">Call Waiter</button>
-                <button id="payBtn" class="btn btn-info" onclick="changeColor('payBtn')">Pay Receipt and Leave the Desk</button>
+                <div class="form-group">
+                    <label for="lightsSwitch">Lights:</label>
+                    <input id="lightsSwitch" type="checkbox" data-toggle="toggle" data-on="Lights On"
+                        data-off="Lights Off" data-onstyle="success" data-offstyle="danger">
+                </div>
+                <button id="callWaiterBtn" class="btn btn-light" onclick="toggleColor('callWaiterBtn')">Call
+                    Waiter</button>
+                <button id="payBtn" class="btn btn-info" onclick="changeColor('payBtn')">Pay Receipt and Leave the
+                    Desk</button>
             </div>
         </div>
     </div>
@@ -30,8 +42,25 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Switch JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/js/bootstrap-switch.min.js"></script>
 
     <script>
+        $(document).ready(function () {
+            // Initialize the Bootstrap Switch
+            $('#lightsSwitch').bootstrapSwitch({
+                size: 'small', // Adjust the size of the switch (options: 'mini', 'small', 'normal', 'large')
+                onColor: 'success', // Color when the switch is in the "on" state
+                offColor: 'danger', // Color when the switch is in the "off" state
+                onText: 'Lights On', // Text when the switch is in the "on" state
+                offText: 'Lights Off', // Text when the switch is in the "off" state
+                labelWidth: 'auto' // Auto-adjust the label width
+            });
+            // Set the initial state of the switch based on the desk data
+            const lightsSwitch = $('#lightsSwitch');
+            //lightsSwitch.bootstrapSwitch('state', {{ desk.light ? 'true' : 'false' }}); // Use a template literal to dynamically set the initial state
+        });
+
         function sendColor() {
             // Get RGB values from the color picker
             const colorPicker = document.getElementById('colorPicker');
@@ -39,16 +68,16 @@
             const rgbValues = hexToRgb(color);
 
             // Send RGB values to the endpoint (replace with your actual endpoint)
-            fetch('/color_endpoint', {
+            fetch('/change_color', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ rgb: rgbValues }),
             })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
         }
 
         function toggleColor(buttonId) {
@@ -76,4 +105,5 @@
         }
     </script>
 </body>
+
 </html>
