@@ -26,25 +26,50 @@ def index():
     return render_template("welcome.html")
 
 
+# dedect desk object is valid and return desk page up to its role. (admin, user, guest...)
 @app.route("/desk/<string:desk_rfid>")
 def desk_access(desk_rfid):
+    # db connection
     connection = get_db()
     cursor = connection.cursor()
 
-    cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
-    data = cursor.fetchone()
+    try:
+        # query
+        cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
+        data = cursor.fetchone()
+    except sqlite3.Error as e:
+        print(e)
+        return "Invalid Desk"
 
+    # parse query result
     id = data[0]
     _desk_rfid = data[1]
     desk_role_id = data[2]
     status = data[3]
     rgb = data[4]
+
+    # create desk object
     desk = Desk(id, _desk_rfid, desk_role_id, status, rgb)
 
-    if data:
-        return desk.serialize()  # create a user page that takes data as parameter.
+    if desk:
+        return get_desk_page(
+            desk=desk
+        )  # create a user page that takes data as parameter.
     else:
-        return "Invalid Desk"  # create and return invalid desk html error page.
+        return render_template(
+            "InvalidDesk.html"
+        )  # create and return invalid desk html error page.
+
+
+def get_desk_page(desk):
+    if desk.desk_role_id == 1:
+        return render_template("admin_desk.html", desk=desk)
+    elif desk.roledesk_role_id == 2:
+        return render_template("user_desk.html", desk=desk)
+    else:
+        return render_template(
+            "guest_desk.html", desk=desk
+        )  # TODO create guest desk page.
 
 
 if __name__ == "__main__":
