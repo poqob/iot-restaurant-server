@@ -33,7 +33,14 @@ def desk_access(desk_rfid):
 
     cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
     data = cursor.fetchone()
-    desk = Desk.parse(data)
+
+    id = data[0]
+    _desk_rfid = data[1]
+    desk_role_id = data[2]
+    status = data[3]
+    rgb = data[4]
+    desk = Desk(id, _desk_rfid, desk_role_id, status, rgb)
+
     if data:
         return desk.serialize()  # create a user page that takes data as parameter.
     else:
