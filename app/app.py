@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, g
 import sqlite3
+from models.desk import Desk
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
@@ -32,9 +33,9 @@ def desk_access(desk_rfid):
 
     cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
     data = cursor.fetchone()
-
+    desk = Desk.parse(data)
     if data:
-        return f"Desk ID: {data[0]},  desk code: {data[1]}"  # create a user page that takes data as parameter.
+        return desk.serialize()  # create a user page that takes data as parameter.
     else:
         return "Invalid Desk"  # create and return invalid desk html error page.
 
