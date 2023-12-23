@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, g
 import sqlite3
 from models.desk import Desk
+from models.mdesk import Mdesk
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
@@ -63,12 +64,12 @@ def desk_access(desk_rfid):
 
 def get_desk_page(desk):
     if desk.desk_role_id == 1:
-        return render_template("admin_desk.html", desk=desk.serialize())
+        return render_template("admin_desk.html", mdesk=Mdesk(desk).serialize())
     elif desk.desk_role_id == 2:
-        return render_template("user_desk.html", desk=desk.serialize())
+        return render_template("user_desk.html", mdesk=Mdesk(desk).serialize())
     else:
         return render_template(
-            "guest_desk.html", desk=desk
+            "guest_desk.html", mdesk=Mdesk(desk).serialize()
         )  # TODO create guest desk page.
 
 

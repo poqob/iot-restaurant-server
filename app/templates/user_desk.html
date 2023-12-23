@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desk {{ desk["desk_rfid"] }}</title>
+    <title>Desk {{ mdesk["desk_rfid"] }}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Bootstrap Switch CSS -->
@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h2>RGB Color Picker</h2>
-		<p>desk: {{desk["desk_rfid"]}}</p>
+                <p>desk: {{mdesk["desk_rfid"]}}</p>
                 <div class="form-group">
                     <label for="colorPicker">Select RGB Color:</label>
                     <input type="color" id="colorPicker" class="form-control">
@@ -48,7 +48,6 @@
 
     <script>
         $(document).ready(function () {
-		console.log('desk data:',{{desk|tojson|safe}});
             // Initialize the Bootstrap Switch
             $('#lightsSwitch').bootstrapSwitch({
                 size: 'small', // Adjust the size of the switch (options: 'mini', 'small', 'normal', 'large')
@@ -60,16 +59,14 @@
             });
             // Set the initial state of the switch based on the desk data
             const lightsSwitch = $('#lightsSwitch');
-	    let asStringDict = {{desk["rgb"]}};
-	    asStringDict = asStringDict.replace(/\//g,'');
-	    let _rgb_dict = asStringDict;
-	    let _status = _rgb_dict["status"]==0?false:true;
-	    let _r=_rgb_dict["red"];
-	    let _g=_rgb_dict["green"];
-	    let _b=_rgb_dict["blue"];
-	    lightsSwitch.bootstrapSwitch('state',_status);
-            
+
+            let led_status = {{ mdesk["led_status"]}
+        };
+        lightsSwitch.bootstrapSwitch('state', led_status);
         });
+
+
+
 
         function sendColor() {
             // Get RGB values from the color picker
@@ -110,7 +107,8 @@
             const r = (bigint >> 16) & 255;
             const g = (bigint >> 8) & 255;
             const b = bigint & 255;
-
+            const lightsSwitch = $('#lightsSwitch');
+            //TODO: get switch status and send it to the endpoint
             return `${r} ${g} ${b}`;
         }
     </script>
