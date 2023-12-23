@@ -1,0 +1,50 @@
+how to create a table with foreign key?
+
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    code TEXT,
+    role_id INTEGER,
+    FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+
+how to insert data to log table with time stamp?
+
+INSERT INTO your_table_name (event_name, event_datetime) VALUES ('Meeting', '2023-12-20 15:30:45');
+
+or 
+
+INSERT INTO your_table_name (event_name, event_datetime) VALUES ('Current Event', CURRENT_TIMESTAMP);
+
+
+
+creation of desk table and fields:
+
+CREATE TABLE desk (
+    id INTEGER PRIMARY KEY,
+    desk_rfid TEXT,
+    desk_role_id INTEGER, status INTEGER default 0, rgb TEXT default '255 255 200', foreign key (role_id) references role(id)
+);
+
+sqlite> .schema restaurantLog
+CREATE TABLE restaurantLog (
+    id INTEGER PRIMARY KEY,
+    attic_status INTAGER
+);
+sqlite> .schema roomLog
+CREATE TABLE roomLog (
+    id INTEGER PRIMARY KEY,
+    dht11 TEXT,
+    led TEXT, status INTEGER
+);
+sqlite> .schema role
+CREATE TABLE role (
+    id INTEGER PRIMARY KEY,
+    role TEXT
+);
+sqlite> .schema desk
+CREATE TABLE desk (
+    id INTEGER PRIMARY KEY,
+    desk_rfid TEXT,
+    desk_role_id INTEGER, status INTEGER default 0, rgb TEXT default '255 255 200', foreign key (desk_role_id) references role(id)
+);
