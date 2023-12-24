@@ -22,7 +22,7 @@
                     <label for="colorPicker">Select RGB Color:</label>
                     <input type="color" id="colorPicker" class="form-control">
                 </div>
-                <button class="btn btn-primary" onclick="sendColor()">Submit Color</button>
+                <button class="btn btn-primary" onclick="sendColor('{{mdesk[" desk_rfid"]}}')">Submit Color</button>
             </div>
             <div class="col-md-6">
                 <h2>Actions</h2>
@@ -31,9 +31,10 @@
                     <input id="lightsSwitch" type="checkbox" data-toggle="toggle" data-on="Lights On"
                         data-off="Lights Off" data-onstyle="success" data-offstyle="danger">
                 </div>
-                <button id="callWaiterBtn" class="btn btn-light" onclick="toggleColor('callWaiterBtn')">Call
+                <button id="callWaiterBtn" class="btn btn-light" onclick="callWaiter('{{mdesk[" desk_rfid"]}}')">Call
                     Waiter</button>
-                <button id="payBtn" class="btn btn-info" onclick="changeColor('payBtn')">Pay Receipt and Leave the
+                <button id="payBtn" class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk[" desk_rfid"]}}')">Pay
+                    Receipt and Leave the
                     Desk</button>
             </div>
         </div>
@@ -63,7 +64,7 @@
             lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status'] }});
 
         // Set the initial color of the color picker based on the desk data
-        const initialColor = rgbToHex({{ mdesk['red']}}, {{ mdesk['green'] }}, {{ mdesk['blue'] }});
+        const initialColor = rgbToHex({{ mdesk['red']}}, { { mdesk['green'] } }, { { mdesk['blue'] } });
 
         document.getElementById('colorPicker').value = initialColor;
         console.log(document.getElementById('colorPicker').value);
@@ -88,7 +89,7 @@
             return res;
         }
 
-        function sendColor() {
+        function sendColor(desk_rfid) {
             // Get RGB values from the color picker
             const colorPicker = document.getElementById('colorPicker');
             const color = colorPicker.value;
@@ -100,22 +101,41 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ rgb: rgbValues }),
+                body: JSON.stringify({ desk_rfid: desk_rfid, rgb: rgbValues }),
             })
                 .then(response => response.json())
                 .then(data => console.log(data))
                 .catch(error => console.error('Error:', error));
         }
 
-        function toggleColor(buttonId) {
-            const button = document.getElementById(buttonId);
-            button.classList.toggle('btn-success');
+
+
+        // post request to pay receipt and leave the desk with desk_rfid data.
+        function callWaiter(desk_rfid) {
+            fetch('/call_waiter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ desk_rfid: desk_rfid }),
+            })
+                .then(response => response.json())
+                .catch(error => console.error('Error:', error));
         }
 
-        function changeColor(buttonId) {
-            const button = document.getElementById(buttonId);
-            button.classList.add('btn-success');
+        // post request to pay receipt and leave the desk with desk_rfid data.
+        function payReceiptAndLeave(desk_rfid) {
+            fetch('/pay_receipt_and_leave', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ desk_rfid: desk_rfid }),
+            })
+                .then(response => response.json())
+                .catch(error => console.error('Error:', error));
         }
+
 
         // Helper function to convert hex color to RGB
         function hexToRgb(hex) {
@@ -128,10 +148,18 @@
             const g = (bigint >> 8) & 255;
             const b = bigint & 255;
             const lightsSwitch = $('#lightsSwitch');
-            // TODO: get switch status and send it to the endpoint
-	    const st= lightsSwitch.bootstrapSwitch('state');
-            return `${Number(st)} ${r} ${g} ${b}`;
+            const st = lightsSwitch.bootstrapSwitch('state');
+            return {
+                status: Number(st),
+                red: r,
+                green: g,
+                blue: b
+            };
         }
+
+
+
+
     </script>
 </body>
 

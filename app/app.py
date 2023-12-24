@@ -70,30 +70,29 @@ def get_desk_page(desk):
     elif desk.desk_role_id == 2:
         return render_template("user_desk.html", mdesk=Mdesk(desk).serialize())
     else:
-        return render_template(
-            "guest_desk.html", mdesk=Mdesk(desk).serialize()
-        )  # TODO create guest desk page.
+        return render_template("guest_desk.html", mdesk=Mdesk(desk).serialize())
 
 
-@app.route("/pay/<string:desk_rfid>")
-def pay(desk_rfid):
-    try:
-        connection = get_db()
-        cursor = connection.cursor()
-        cursor.execute("update desk set status = 0 where desk_rfid = ?", (desk_rfid,))
-        return render_template("thank_you.html")
-    except sqlite3.Error as e:
-        print(e)
-        return render_template("InvalidDesk.html")
+@app.route("/pay")
+def pay():
+    if request.method == "POST":
+        data = request.get_json()
+        try:
+            connection = get_db()
+            cursor = connection.cursor()
+            cursor.execute("update desk set status = 0 where desk_rfid = ?", (data,))
+            return render_template("thank_you.html")
+        except sqlite3.Error as e:
+            print(e)
+            return render_template("InvalidDesk.html")
 
 
-# TODO: create a route for color change request. incoming data is light status, red, green, blue values in a dictionary.
 @app.route("/color_change", methods=["POST"])
 def color_change():
     if request.method == "POST":
         data = request.get_json()
-        _led=RGBLED.parse(data)
-        print(_led.serialize())
+        print(data)
+        _led = RGBLED.parse(data)
         return _led.serialize()
 
 
