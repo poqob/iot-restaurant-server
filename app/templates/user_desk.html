@@ -63,29 +63,30 @@
             lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status'] }});
 
         // Set the initial color of the color picker based on the desk data
-        const initialColor = rgbToHex({{mdesk['red']}}, {{mdesk['green']}}, {{mdesk['blue']}});
-	
+        const initialColor = rgbToHex({{ mdesk['red']}}, { { mdesk['green'] } }, { { mdesk['blue'] } });
+
         document.getElementById('colorPicker').value = initialColor;
-	console.log(document.getElementById('colorPicker').value);
-	console.log(initialColor);});
-	function decimalToHex(decimalValue){return decimalValue.toString(16);}
-	
-function rgbToHex(r, g, b) {
-    // Ensure that the values are in the valid range (0 to 255)
-    r = Math.min(255, Math.max(0, r));
-    g = Math.min(255, Math.max(0, g));
-    b = Math.min(255, Math.max(0, b));
+        console.log(document.getElementById('colorPicker').value);
+        console.log(initialColor);});
+        function decimalToHex(decimalValue) { return decimalValue.toString(16); }
 
-    // Convert each component to a two-digit hexadecimal representation
-    const hexR = r.toString(16).padStart(2, '0');
-    const hexG = g.toString(16).padStart(2, '0');
-    const hexB = b.toString(16).padStart(2, '0');
-	let res='#';
-	res+=hexR;
-	res+=hexG;
-	res+=hexB;
+        function rgbToHex(r, g, b) {
+            // Ensure that the values are in the valid range (0 to 255)
+            r = Math.min(255, Math.max(0, r));
+            g = Math.min(255, Math.max(0, g));
+            b = Math.min(255, Math.max(0, b));
 
-    return res;}	
+            // Convert each component to a two-digit hexadecimal representation
+            const hexR = r.toString(16).padStart(2, '0');
+            const hexG = g.toString(16).padStart(2, '0');
+            const hexB = b.toString(16).padStart(2, '0');
+            let res = '#';
+            res += hexR;
+            res += hexG;
+            res += hexB;
+
+            return res;
+        }
 
         function sendColor() {
             // Get RGB values from the color picker
@@ -94,7 +95,7 @@ function rgbToHex(r, g, b) {
             const rgbValues = hexToRgb(color);
 
             // Send RGB values to the endpoint (replace with your actual endpoint)
-            fetch('/change_color', {
+            fetch('/color_change', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -21,7 +21,6 @@ def close_connection(exception):
         db.close()
 
 
-# TODO welcome page.
 @app.route("/")
 def index():
     return render_template("welcome.html")
@@ -53,6 +52,8 @@ def desk_access(desk_rfid):
     desk = Desk(id, _desk_rfid, desk_role_id, status, rgb)
 
     if desk:
+        desk.status = 1
+        cursor.execute("update desk set status = 1 where id = ?", (id,))
         return get_desk_page(
             desk=desk
         )  # create a user page that takes data as parameter.
@@ -71,6 +72,26 @@ def get_desk_page(desk):
         return render_template(
             "guest_desk.html", mdesk=Mdesk(desk).serialize()
         )  # TODO create guest desk page.
+
+
+@app.route("/pay/<string:desk_rfid>")
+def pay(desk_rfid):
+    try:
+        connection = get_db()
+        cursor = connection.cursor()
+        cursor.execute("update desk set status = 0 where desk_rfid = ?", (desk_rfid,))
+        return render_template("thank_you.html")
+    except sqlite3.Error as e:
+        print(e)
+        return render_template("InvalidDesk.html")
+
+
+# TODO: create a route for color change request. incoming data is light status, red, green, blue values in a dictionary.
+@app.route("/color_change", methods=["POST"])
+def color_change():
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
 
 
 if __name__ == "__main__":
