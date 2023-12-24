@@ -125,7 +125,7 @@
 
         // post request to pay receipt and leave the desk with desk_rfid data.
         function payReceiptAndLeave(desk_rfid) {
-            fetch('/pay_receipt_and_leave', {
+            fetch('/pay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
