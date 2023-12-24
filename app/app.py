@@ -78,13 +78,10 @@ def pay():
     if request.method == "POST":
         data = request.get_json()
         try:
-            connection = get_db()
-            cursor = connection.cursor()
-            cursor.execute("update desk set status = 0 where desk_rfid = ?", (data,))
-            return render_template("thank_you.html")
+            return {"desk_rfid":data, "call_waiter":True}
         except sqlite3.Error as e:
             print(e)
-            return render_template("InvalidDesk.html")
+            return {"desk_rfid":data, "call_waiter":False}
 
 
 @app.route("/color_change", methods=["POST"])

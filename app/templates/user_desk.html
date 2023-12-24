@@ -22,7 +22,7 @@
                     <label for="colorPicker">Select RGB Color:</label>
                     <input type="color" id="colorPicker" class="form-control">
                 </div>
-                <button class="btn btn-primary" onclick="sendColor('{{mdesk[" desk_rfid"]}}')">Submit Color</button>
+                <button class="btn btn-primary" onclick="sendColor('{{mdesk["desk_rfid"]}}')">Submit Color</button>
             </div>
             <div class="col-md-6">
                 <h2>Actions</h2>
@@ -31,9 +31,9 @@
                     <input id="lightsSwitch" type="checkbox" data-toggle="toggle" data-on="Lights On"
                         data-off="Lights Off" data-onstyle="success" data-offstyle="danger">
                 </div>
-                <button id="callWaiterBtn" class="btn btn-light" onclick="callWaiter('{{mdesk[" desk_rfid"]}}')">Call
+                <button id="callWaiterBtn" class="btn btn-light" onclick="callWaiter('{{mdesk["desk_rfid"]}}')">Call
                     Waiter</button>
-                <button id="payBtn" class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk[" desk_rfid"]}}')">Pay
+                <button id="payBtn" class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk["desk_rfid"]}}')">Pay
                     Receipt and Leave the
                     Desk</button>
             </div>
@@ -64,7 +64,7 @@
             lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status'] }});
 
         // Set the initial color of the color picker based on the desk data
-        const initialColor = rgbToHex({{ mdesk['red']}}, { { mdesk['green'] } }, { { mdesk['blue'] } });
+        const initialColor = rgbToHex({{ mdesk['red']}}, {{mdesk['green']}}, {{mdesk['blue']}});
 
         document.getElementById('colorPicker').value = initialColor;
         console.log(document.getElementById('colorPicker').value);
@@ -120,12 +120,13 @@
                 body: JSON.stringify({ desk_rfid: desk_rfid }),
             })
                 .then(response => response.json())
+		.then(data=>console.log(data))
                 .catch(error => console.error('Error:', error));
         }
 
         // post request to pay receipt and leave the desk with desk_rfid data.
         function payReceiptAndLeave(desk_rfid) {
-            fetch('/pay_receipt_and_leave', {
+            fetch('/pay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,6 +134,7 @@
                 body: JSON.stringify({ desk_rfid: desk_rfid }),
             })
                 .then(response => response.json())
+		.then(data=>console.log(data))
                 .catch(error => console.error('Error:', error));
         }
 
