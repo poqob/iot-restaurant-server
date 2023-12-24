@@ -23,3 +23,11 @@ class Mdesk:
             "green": self.rgb["green"],
             "blue": self.rgb["blue"],
         }
+
+
+if __name__ == "__main__":
+    desk = Desk(
+        1, "BA:65:D3:A1", 1, 1, {"status": True, "red": 255, "green": 0, "blue": 0}
+    )
+    mdesk = Mdesk(desk)
+    print(mdesk.serialize())
