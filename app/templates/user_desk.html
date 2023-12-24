@@ -63,7 +63,7 @@
             lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status'] }});
 
         // Set the initial color of the color picker based on the desk data
-        const initialColor = rgbToHex({{ mdesk['red']}}, { { mdesk['green'] } }, { { mdesk['blue'] } });
+        const initialColor = rgbToHex({{ mdesk['red']}}, {{ mdesk['green'] }}, {{ mdesk['blue'] }});
 
         document.getElementById('colorPicker').value = initialColor;
         console.log(document.getElementById('colorPicker').value);
@@ -129,7 +129,8 @@
             const b = bigint & 255;
             const lightsSwitch = $('#lightsSwitch');
             // TODO: get switch status and send it to the endpoint
-            return `${r} ${g} ${b}`;
+	    const st= lightsSwitch.bootstrapSwitch('state');
+            return `${Number(st)} ${r} ${g} ${b}`;
         }
     </script>
 </body>

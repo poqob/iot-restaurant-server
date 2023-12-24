@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, g
 import sqlite3
 from models.desk import Desk
 from models.mDesk import Mdesk
+from models.led import RGBLED
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
@@ -91,7 +92,9 @@ def pay(desk_rfid):
 def color_change():
     if request.method == "POST":
         data = request.get_json()
-        print(data)
+        _led=RGBLED.parse(data)
+        print(_led.serialize())
+        return _led.serialize()
 
 
 if __name__ == "__main__":
