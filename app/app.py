@@ -84,6 +84,18 @@ def pay():
             return {"desk_rfid":data, "call_waiter":False}
 
 
+@app.route("/call_waiter")
+def call_waiter():
+    if request.method == "POST":
+        data = request.get_json()
+        try:
+            # TODO: call esp waiter.
+            return {"desk_rfid": data, "call_waiter": True}
+        except sqlite3.Error as e:
+            print(e)
+            return {"desk_rfid": data, "call_waiter": False}
+
+
 @app.route("/color_change", methods=["POST"])
 def color_change():
     if request.method == "POST":
