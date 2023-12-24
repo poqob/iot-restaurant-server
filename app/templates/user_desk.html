@@ -67,7 +67,7 @@
 	
         document.getElementById('colorPicker').value = initialColor;
 	console.log(document.getElementById('colorPicker').value);
-	console.log(initialColor);
+	console.log(initialColor);});
 	function decimalToHex(decimalValue){return decimalValue.toString(16);}
 	
 function rgbToHex(r, g, b) {
@@ -80,11 +80,12 @@ function rgbToHex(r, g, b) {
     const hexR = r.toString(16).padStart(2, '0');
     const hexG = g.toString(16).padStart(2, '0');
     const hexB = b.toString(16).padStart(2, '0');
+	let res='#';
+	res+=hexR;
+	res+=hexG;
+	res+=hexB;
 
-    // Concatenate the components to form the hexadecimal color code
-    const hexColor = '#${hexR}${hexG}${hexB}';
-
-    return hexColor;}	
+    return res;}	
 
         function sendColor() {
             // Get RGB values from the color picker
