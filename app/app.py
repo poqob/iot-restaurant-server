@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, g
 import sqlite3
 from models.desk import Desk
-from models.mdesk import Mdesk
+from models.Mdesk import Mdesk
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
