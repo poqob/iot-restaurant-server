@@ -148,9 +148,10 @@ def log():
             timestamp = datetime.now()
             time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
             if(log):
-                serialized = json.dumps(data)
-                print(timestamp)
-                query = "insert into log (log,timestamp) values ("+serialized+","+time_str+");"
+                serialized = json.dumps(data).replace('"', '""')
+                
+                query = "insert into log (log,timestamp) values (\""+serialized+"\",\""+time_str+"\");"
+                
                 cursor.execute(query)
                 connection.commit()
                 return log.serialize()
