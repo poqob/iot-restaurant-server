@@ -4,6 +4,7 @@ from models.desk import Desk
 from models.mDesk import Mdesk
 from models.led import RGBLED
 from models.log import Log
+from datetime import datetime
 import json
 
 app = Flask(__name__)
@@ -140,9 +141,23 @@ def color_change():
 def log():
     if request.method == "POST":
         data = request.get_json()
-        log = Log.parse(data)
-        print(log.serialize())
-        return log.serialize()
+        connection = get_db()
+        cursor = connection.cursor()
+        try:
+            log = Log.parse(data)
+            timestamp = datetime.now()
+            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if(log):
+                serialized = json.dumps(data)
+                print(timestamp)
+                query = "insert into log (log,timestamp) values ("+serialized+","+time_str+");"
+                cursor.execute(query)
+                connection.commit()
+                return log.serialize()
+        except sqlite3.Error as e:
+             print(e)
+             return "{error}"
+        
 
 
 if __name__ == "__main__":
