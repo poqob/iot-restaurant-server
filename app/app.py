@@ -3,6 +3,7 @@ import sqlite3
 from models.desk import Desk
 from models.mDesk import Mdesk
 from models.led import RGBLED
+from models.log import Log
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
@@ -73,7 +74,7 @@ def get_desk_page(desk):
         return render_template("guest_desk.html", mdesk=Mdesk(desk).serialize())
 
 
-@app.route("/pay")
+@app.route("/pay", methods=["POST"])
 def pay():
     if request.method == "POST":
         data = request.get_json()
@@ -87,7 +88,7 @@ def pay():
             return render_template("InvalidDesk.html")
 
 
-@app.route("/call_waiter")
+@app.route("/call_waiter", methods=["POST"])
 def call_waiter():
     if request.method == "POST":
         data = request.get_json()
@@ -106,6 +107,15 @@ def color_change():
         print(data)
         _led = RGBLED.parse(data)
         return _led.serialize()
+
+
+@app.route("/log", methods=["POST"])
+def log():
+    if request.method == "POST":
+        data = request.get_json()
+        log = Log.parse(data)
+        print(log.serialize())
+        return log.serialize()
 
 
 if __name__ == "__main__":
