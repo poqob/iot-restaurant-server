@@ -4,6 +4,7 @@ from models.desk import Desk
 from models.mDesk import Mdesk
 from models.led import RGBLED
 from models.log import Log
+import json
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
@@ -34,11 +35,11 @@ def desk_access(desk_rfid):
     # db connection
     connection = get_db()
     cursor = connection.cursor()
-
     try:
         # query
         cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
         data = cursor.fetchone()
+
     except sqlite3.Error as e:
         print(e)
         return render_template("InvalidDesk.html")
@@ -56,6 +57,8 @@ def desk_access(desk_rfid):
     if desk:
         desk.status = 1
         cursor.execute("update desk set status = 1 where id = ?", (id,))
+        connection.commit()
+        cursor.close()
         return get_desk_page(
             desk=desk
         )  # create a user page that takes data as parameter.
@@ -78,14 +81,19 @@ def get_desk_page(desk):
 def pay():
     if request.method == "POST":
         data = request.get_json()
+        desk_rfid = data["desk_rfid"]
+        connection = get_db()
+        cursor = connection.cursor()
         try:
-            connection = get_db()
-            cursor = connection.cursor()
-            cursor.execute("update desk set status = 0 where desk_rfid = ?", (data,))
+            query = 'update desk set status = 0 where desk_rfid = "' + desk_rfid + '";'
+            cursor.execute(query)
+            connection.commit()
             return render_template("thank_you.html")
         except sqlite3.Error as e:
             print(e)
-            return render_template("InvalidDesk.html")
+            return {"log_status": False}
+        finally:
+            cursor.close()
 
 
 @app.route("/call_waiter", methods=["POST"])
@@ -102,11 +110,30 @@ def call_waiter():
 
 @app.route("/color_change", methods=["POST"])
 def color_change():
+    connection = get_db()
+    cursor = connection.cursor()
     if request.method == "POST":
         data = request.get_json()
-        print(data)
-        _led = RGBLED.parse(data)
-        return _led.serialize()
+        led_ = data["rgb"]
+        desk_rfid = data["desk_rfid"]
+        _led = RGBLED.parse(led_)
+        if _led:
+            rgb_field = json.dumps(_led.serialize()).replace('"', '""')
+            query = (
+                'update desk set rgb = "'
+                + rgb_field
+                + '" where desk_rfid = "'
+                + desk_rfid
+                + '";'
+            )
+            cursor.execute(query)
+            connection.commit()
+            cursor.execute("select * from desk;")
+            record = cursor.fetchall()
+            cursor.close()
+            print(record)
+            return _led.serialize()
+        return {"log_status": False}
 
 
 @app.route("/log", methods=["POST"])
