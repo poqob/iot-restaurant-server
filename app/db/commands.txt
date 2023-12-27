@@ -48,3 +48,6 @@ CREATE TABLE desk (
     desk_rfid TEXT,
     desk_role_id INTEGER, status INTEGER default 0, rgb TEXT default '255 255 200', foreign key (desk_role_id) references role(id)
 );
+
+
+create table log  ( id INTEGER, log TEXT default '{"dht":{"temperature":0, "humidity":0},"attic":0,"rain":0}');

@@ -37,7 +37,7 @@ def desk_access(desk_rfid):
         # query
         cursor.execute("select * from desk where desk_rfid = ?", (desk_rfid,))
         data = cursor.fetchone()
-        cursor.close()
+        
     except sqlite3.Error as e:
         print(e)
         return render_template("InvalidDesk.html")
