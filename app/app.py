@@ -5,10 +5,12 @@ from models.mDesk import Mdesk
 from models.led import RGBLED
 from models.log import Log
 from datetime import datetime
+from api.espApi import EspApi
 import json
 
 app = Flask(__name__)
 app.config["DATABASE"] = "./db/main.db"
+api_esp = EspApi()
 
 
 def get_db():
@@ -102,13 +104,14 @@ def call_waiter():
     if request.method == "POST":
         data = request.get_json()
         try:
-            # TODO: call esp waiter.
+            api_esp.call_waiter(data["desk_rfid"])
             return {"desk_rfid": data, "call_waiter": True}
         except sqlite3.Error as e:
             print(e)
             return {"desk_rfid": data, "call_waiter": False}
 
 
+# post request to change color of led.
 @app.route("/color_change", methods=["POST"])
 def color_change():
     connection = get_db()
@@ -119,6 +122,7 @@ def color_change():
         desk_rfid = data["desk_rfid"]
         _led = RGBLED.parse(led_)
         if _led:
+            api_esp.color_change(_led)  # send request to esp
             rgb_field = json.dumps(_led.serialize()).replace('"', '""')
             query = (
                 'update desk set rgb = "'
@@ -137,6 +141,7 @@ def color_change():
         return {"log_status": False}
 
 
+# TODO: change this, flask will call esp/log and receive log data from esp.
 @app.route("/log", methods=["POST"])
 def log():
     if request.method == "POST":
@@ -147,18 +152,23 @@ def log():
             log = Log.parse(data)
             timestamp = datetime.now()
             time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            if(log):
+            if log:
                 serialized = json.dumps(data).replace('"', '""')
-                
-                query = "insert into log (log,timestamp) values (\""+serialized+"\",\""+time_str+"\");"
-                
+
+                query = (
+                    'insert into log (log,timestamp) values ("'
+                    + serialized
+                    + '","'
+                    + time_str
+                    + '");'
+                )
+
                 cursor.execute(query)
                 connection.commit()
                 return log.serialize()
         except sqlite3.Error as e:
-             print(e)
-             return "{error}"
-        
+            print(e)
+            return "{error}"
 
 
 if __name__ == "__main__":
