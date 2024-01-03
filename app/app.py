@@ -174,23 +174,29 @@ def log():
             return "{error}"
 
 
-# incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
+async def handle_attic(data):
+    try:
+        _attic = data["attic"]
+        _desk_rfid = data["desk_rfid"]
+
+        # Assuming api_esp.attic() is asynchronous
+        _post_result = await api_esp.attic(data)
+
+        # Perform any other asynchronous operations as needed
+        return {"attic": _attic, "desk_rfid": _desk_rfid, "post_result": _post_result}
+    except sqlite3.Error as e:
+        print(e)
+        return {"error": str(e)}
+
+
 @app.route("/attic", methods=["POST"])
-def attic():
+async def attic():
     if request.method == "POST":
         data = request.get_json()
-        connection = get_db()
-        cursor = connection.cursor()
-        try:
-            _attic = data["attic"]
-            _desk_rfid = data["desk_rfid"]
-            _post = api_esp.attic(data)
 
-            return {"attic": _attic, "desk_rfid": _desk_rfid}
-
-        except sqlite3.Error as e:
-            print(e)
-            return "{error}"
+        # Use await to call the asynchronous function
+        result = await handle_attic(data)
+        return result
 
 
 if __name__ == "__main__":
