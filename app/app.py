@@ -183,7 +183,7 @@ def attic():
             _attic = data["attic"]
             _desk_rfid = data["desk_rfid"]
             _post = api_esp.attic(data)
-            return {"attic": str(_attic), "desk_rfid": str(_desk_rfid)}
+            return _post
 
         except any as e:
             print(e)

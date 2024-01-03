@@ -16,11 +16,10 @@ class EspApi:
         response = requests.post(url, data=data_waiter)
         print(response.text)
 
-    # attic = 0 or 1
-    def attic(self, attic):
+    # data includes attic: 0-1, desk_rfid: string
+    def attic(self, data):
         url = "http://192.168.73.100:5951/attic"
-        attic = {"attic": attic}
-        response = requests.post(url, data=attic)
+        response = requests.post(url, data=data)
         print(response.text)
         return response.text
 
