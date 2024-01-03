@@ -16,11 +16,13 @@ class EspApi:
         response = requests.post(url, data=data_waiter)
         print(response.text)
 
+    # attic = 0 or 1
     def attic(self, attic):
         url = "http://192.168.73.100:5951/attic"
         attic = {"attic": attic}
         response = requests.post(url, data=attic)
         print(response.text)
+        return response.text
 
     def log(self):
         url = "http://192.168.73.100:5951/log"

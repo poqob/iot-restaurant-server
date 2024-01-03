@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attic Control</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap Switch CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/css/bootstrap3/bootstrap-switch.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h2>Attic Control</h2>
+        <form id="atticForm">
+            <!-- Include the fixed desk_rfid value -->
+            <input type="hidden" id="deskRfid" name="desk_rfid" value="BA:65:D3:A1">
+
+            <div class="form-group">
+                <label for="atticStatus">Attic Status:</label>
+                <!-- Use Bootstrap Switch -->
+                <input type="checkbox" id="atticStatus" name="attic" data-toggle="switch" data-on-text="Open"
+                    data-off-text="Closed">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Switch JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/js/bootstrap-switch.min.js"></script>
+
+    <script>
+        // Initialize Bootstrap Switch
+        $(document).ready(function () {
+            $('#atticStatus').bootstrapSwitch();
+        });
+
+        function submitForm() {
+            // Get fixed desk_rfid and atticStatus
+            const deskRfid = document.getElementById("deskRfid").value;
+            const atticStatus = document.getElementById("atticStatus").checked ? 1 : 0;
+
+            // Make a POST request to your Flask endpoint
+            fetch("/attic", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ desk_rfid: deskRfid, attic: atticStatus })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server response:", data);
+                    // Handle the response as needed
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    // Handle errors
+                });
+        }
+    </script>
+
+</body>
+
+</html>

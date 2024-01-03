@@ -141,6 +141,9 @@ def color_change():
         return {"log_status": False}
 
 
+# admin routes
+
+
 # TODO: change this, flask will call esp/log and receive log data from esp.
 @app.route("/log", methods=["POST"])
 def log():
@@ -166,6 +169,35 @@ def log():
                 cursor.execute(query)
                 connection.commit()
                 return log.serialize()
+        except sqlite3.Error as e:
+            print(e)
+            return "{error}"
+
+
+# TODO
+# incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
+@app.route("/attic", methods=["POST"])
+def attic():
+    if request.method == "POST":
+        data = request.get_json()
+        connection = get_db()
+        cursor = connection.cursor()
+        try:
+            _attic = data["attic"]
+            _desk_rfid = data["desk_rfid"]
+            _post = api_esp.attic(_attic)
+            query = (
+                'update desk set attic = "'
+                + str(_attic)
+                + '" where desk_rfid='
+                + str(_desk_rfid)
+                + ";"
+            )
+            if _post:
+                cursor.execute(query)
+                connection.commit()
+                return {"attic": _attic, "desk_rfid": _desk_rfid}
+
         except sqlite3.Error as e:
             print(e)
             return "{error}"
