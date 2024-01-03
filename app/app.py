@@ -174,7 +174,6 @@ def log():
             return "{error}"
 
 
-# TODO
 # incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
 @app.route("/attic", methods=["POST"])
 def attic():
@@ -185,18 +184,9 @@ def attic():
         try:
             _attic = data["attic"]
             _desk_rfid = data["desk_rfid"]
-            _post = api_esp.attic(_attic)
-            query = (
-                'update desk set attic = "'
-                + str(_attic)
-                + '" where desk_rfid='
-                + str(_desk_rfid)
-                + ";"
-            )
-            if _post:
-                cursor.execute(query)
-                connection.commit()
-                return {"attic": _attic, "desk_rfid": _desk_rfid}
+            _post = api_esp.attic(data)
+
+            return {"attic": _attic, "desk_rfid": _desk_rfid}
 
         except sqlite3.Error as e:
             print(e)
