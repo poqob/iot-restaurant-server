@@ -27,6 +27,10 @@
                     data-off-text="Closed">
             </div>
             <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+
+            <!-- Add the log request button -->
+            <button type="button" class="btn btn-info mt-2" onclick="requestLog()">Request Log</button>
+            <div id="logResult" class="mt-2"></div>
         </form>
     </div>
 
@@ -60,6 +64,23 @@
                 .then(data => {
                     console.log("Server response:", data);
                     // Handle the response as needed
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    // Handle errors
+                });
+        }
+
+        // Function to request log from the server
+        function requestLog() {
+            fetch("/log", {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Log response:", data);
+                    // Display the log result in the logResult div
+                    document.getElementById("logResult").innerText = "Log Result: " + JSON.stringify(data);
                 })
                 .catch(error => {
                     console.error("Error:", error);

@@ -174,6 +174,39 @@ def log():
             return "{error}"
 
 
+@app.route("/log", methods=["GET"])
+def log():
+    if request.method == "GET":
+        connection = get_db()
+        cursor = connection.cursor()
+        try:
+            request = api_esp.log()
+            log = Log.parse(request)
+            timestamp = datetime.now()
+            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if log:
+                serialized = json.dumps(request).replace('"', '""')
+
+                query = (
+                    'insert into log (log,timestamp) values ("'
+                    + serialized
+                    + '","'
+                    + time_str
+                    + '");'
+                )
+
+                cursor.execute(query)
+                connection.commit()
+                return log.serialize()
+
+            cursor.execute("select * from log;")
+            data = cursor.fetchall()
+            return {"log": data}
+        except sqlite3.Error as e:
+            print(e)
+            return "{error}"
+
+
 # incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
 @app.route("/attic", methods=["POST"])
 def attic():
