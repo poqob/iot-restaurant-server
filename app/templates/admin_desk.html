@@ -18,12 +18,12 @@
         <h2>Attic Control</h2>
         <form id="atticForm">
             <!-- Include the fixed desk_rfid value -->
-            <input type="hidden" id="deskRfid" name="desk_rfid" value="BA:65:D3:A1">
+            <input type="hidden" id="desk_rfid" name="desk_rfid" value="BA:65:D3:A1">
 
             <div class="form-group">
-                <label for="atticStatus">Attic Status:</label>
+                <label for="attic_status">Attic Status:</label>
                 <!-- Use Bootstrap Switch -->
-                <input type="checkbox" id="atticStatus" name="attic" data-toggle="switch" data-on-text="Open"
+                <input type="checkbox" id="attic_status" name="attic" data-toggle="switch" data-on-text="Open"
                     data-off-text="Closed">
             </div>
             <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
@@ -40,13 +40,13 @@
     <script>
         // Initialize Bootstrap Switch
         $(document).ready(function () {
-            $('#atticStatus').bootstrapSwitch();
+            $('#attic_status').bootstrapSwitch();
         });
 
         function submitForm() {
-            // Get fixed desk_rfid and atticStatus
-            const deskRfid = document.getElementById("deskRfid").value;
-            const atticStatus = document.getElementById("atticStatus").checked ? 1 : 0;
+            // Get fixed desk_rfid and attic_status
+            const desk_rfid = document.getElementById("desk_rfid").value;
+            const attic_status = document.getElementById("attic_status").checked ? 1 : 0;
 
             // Make a POST request to your Flask endpoint
             fetch("/attic", {
@@ -54,7 +54,7 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ desk_rfid: deskRfid, attic: atticStatus })
+                body: JSON.stringify({ desk_rfid: desk_rfid, attic: attic_status })
             })
                 .then(response => response.json())
                 .then(data => {
