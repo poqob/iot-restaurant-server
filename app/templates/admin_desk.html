@@ -26,6 +26,13 @@
                 <input type="checkbox" id="attic_status" name="attic" data-toggle="switch" data-on-text="Open"
                     data-off-text="Closed">
             </div>
+
+            <div class="form-group">
+                <label for="automatic_attic">Automatic Attic:</label>
+                <!-- Use Bootstrap Switch -->
+                <input type="checkbox" id="automatic_attic" name="automatic_attic" data-toggle="switch"
+                    data-on-text="Active" data-off-text="Deactive">
+            </div>
             <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
 
             <!-- Add the log request button -->
@@ -51,14 +58,14 @@
             // Get fixed desk_rfid and attic_status
             const desk_rfid = document.getElementById("desk_rfid").value;
             const attic_status = document.getElementById("attic_status").checked ? 1 : 0;
-
+            const automatic_attic = document.getElementById("automatic_attic").checked ? 1 : 0;
             // Make a POST request to your Flask endpoint
             fetch("/attic", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ desk_rfid: desk_rfid, attic: attic_status })
+                body: JSON.stringify({ desk_rfid: desk_rfid, attic: attic_status, automatic_attic: automatic_attic })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -73,7 +80,7 @@
 
         // Function to request log from the server
         function requestLog() {
-            fetch("/log", {
+            fetch("/log_request", {
                 method: "GET",
             })
                 .then(response => response.json())
@@ -87,6 +94,7 @@
                     // Handle errors
                 });
         }
+
     </script>
 
 </body>

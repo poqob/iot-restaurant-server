@@ -145,7 +145,7 @@ def color_change():
 
 
 # TODO: change this, flask will call esp/log and receive log data from esp.
-@app.route("/log", methods=["GET", "POST"])
+@app.route("/log_request", methods=["GET", "POST"])
 def log():
     if request.method == "GET":
         connection = get_db()
@@ -211,6 +211,7 @@ def attic():
         try:
             _attic = data["attic"]
             _desk_rfid = data["desk_rfid"]
+            _automatic = data["automatic_attic"]
             _post = api_esp.attic(data)
             return _post
 
