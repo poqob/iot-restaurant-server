@@ -149,17 +149,17 @@ def log():
     if request.method == "POST":
         connection = get_db()
         cursor = connection.cursor()
-
+        request_data = request.get_json()
         try:
-            request_data = api_esp.log()
+            print(request_data)
             log_entry = Log.parse(request_data)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             if log_entry:
                 serialized_log = json.dumps(log_entry.serialize()).replace('"', '""')
 
-                query = f'INSERT INTO log (log, timestamp) VALUES ("{serialized_log}", "{timestamp}");'
-                cursor.execute(query)
+                query = "INSERT INTO log (log, timestamp) VALUES (?, ?);"
+                cursor.execute(query, (serialized_log, timestamp))
                 connection.commit()
 
                 return jsonify(log_entry.serialize())
