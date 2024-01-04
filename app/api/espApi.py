@@ -25,4 +25,5 @@ class EspApi:
     def log(self):
         url = "http://192.168.73.100:5951/log"
         response = requests.get(url)
+        print(response.text)
         return response.text
