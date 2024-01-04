@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g
+from flask import Flask, render_template, request, g, jsonify
 import sqlite3
 from models.desk import Desk
 from models.mDesk import Mdesk
@@ -188,4 +188,4 @@ def attic():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="192.168.73.227", port=5000, debug=True)
