@@ -141,9 +141,6 @@ def color_change():
         return {"log_status": False}
 
 
-# admin routes
-
-
 @app.route("/log", methods=["POST"])
 def receive_log():
     if request.method == "POST":
@@ -161,7 +158,20 @@ def receive_log():
             attic_status = data.get("attic")
             rain_status = data.get("rain")
             log = Log(dht_dict=dht_data, attic=attic_status, rain=rain_status)
-            print(log.serialize())
+            timestamp = datetime.now()
+            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if log:
+                serialized = json.dumps(data).replace('"', '""')
+
+                query = (
+                    'insert into log (log,timestamp) values ("'
+                    + serialized
+                    + '","'
+                    + time_str
+                    + '");'
+                )
+                cursor.execute(query)
+                connection.commit()
             # Respond with a success message
             return jsonify({"message": "Log data received successfully"})
 
