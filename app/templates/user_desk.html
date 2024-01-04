@@ -48,7 +48,7 @@
                         <label for="colorPicker">Select RGB Color:</label>
                         <input type="color" id="colorPicker" class="form-control">
                     </div>
-                    <button class="btn btn-primary" onclick="sendColor('{{mdesk["desk_rfid"]}}')">Submit Color</button>
+                    <button class="btn btn-primary" onclick="sendColor('{{ mdesk["desk_rfid"] }}')">Submit Color</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -59,7 +59,7 @@
                         <input id="lightsSwitch" type="checkbox" data-toggle="toggle" data-on="Lights On"
                             data-off="Lights Off" data-onstyle="success" data-offstyle="danger">
                     </div>
-                    <button class="btn btn-light" onclick="callWaiter('{{mdesk["desk_rfid"]}}')">Call Waiter</button>
+                    <button class="btn btn-light" onclick="callWaiter('{{ mdesk["desk_rfid"] }}')">Call Waiter</button>
                     <button class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk["desk_rfid"]}}')">Pay Receipt and
                         Leave the Desk</button>
                 </div>
@@ -96,53 +96,52 @@
         console.log(document.getElementById('colorPicker').value);
         console.log(initialColor);
         });
-
         function sendColor(desk_rfid) {
-            // Get RGB values from the color picker
-            const colorPicker = document.getElementById('colorPicker');
-            const color = colorPicker.value;
-            const rgbValues = hexToRgb(color);
+    // Get RGB values from the color picker
+    const colorPicker = document.getElementById('colorPicker');
+    const color = colorPicker.value;
+    const rgbValues = hexToRgb(color);
 
-            // Send RGB values to the endpoint (replace with your actual endpoint)
-            fetch('/color_change', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ desk_rfid: desk_rfid, rgb: rgbValues }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        }
+    // Send RGB values to the endpoint (replace with your actual endpoint)
+    fetch('/color_change', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ desk_rfid: desk_rfid, rgb: rgbValues }),
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
 
-        // post request to pay receipt and leave the desk with desk_rfid data.
-        function callWaiter(desk_rfid) {
-            fetch('http://192.168.73.227:5000/call_waiter', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ desk_rfid: desk_rfid }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        }
+// post request to pay receipt and leave the desk with desk_rfid data.
+function callWaiter(desk_rfid) {
+    fetch('http://192.168.73.227:5000/call_waiter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ desk_rfid: desk_rfid }),
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
 
-        // post request to pay receipt and leave the desk with desk_rfid data.
-        function payReceiptAndLeave(desk_rfid) {
-            fetch('http://192.168.73.227:5000/pay', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ desk_rfid: desk_rfid }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        }
+// post request to pay receipt and leave the desk with desk_rfid data.
+function payReceiptAndLeave(desk_rfid) {
+    fetch('http://192.168.73.227:5000/pay', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ desk_rfid: desk_rfid }),
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
 
         // Helper function to convert hex color to RGB
         function hexToRgb(hex) {
