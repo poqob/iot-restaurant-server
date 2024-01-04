@@ -96,7 +96,7 @@
             const rgbValues = hexToRgb(color);
 
             // Send RGB values to the endpoint (replace with your actual endpoint)
-            fetch('/color_change', {
+            fetch('http://192.168.73.227:5000/color_change', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,7 +112,7 @@
 
         // post request to pay receipt and leave the desk with desk_rfid data.
         function callWaiter(desk_rfid) {
-            fetch('/call_waiter', {
+            fetch('http://192.168.73.227:5000/call_waiter', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +126,7 @@
 
         // post request to pay receipt and leave the desk with desk_rfid data.
         function payReceiptAndLeave(desk_rfid) {
-            fetch('/pay', {
+            fetch('http://192.168.73.227:5000/pay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -60,7 +60,7 @@
             const attic_status = document.getElementById("attic_status").checked ? 1 : 0;
             const automatic_attic = document.getElementById("automatic_attic").checked ? 1 : 0;
             // Make a POST request to your Flask endpoint
-            fetch("/attic", {
+            fetch("http://192.168.73.227:5000/attic", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -80,7 +80,7 @@
 
         // Function to request log from the server
         function requestLog() {
-            fetch("/log_request", {
+            fetch("http://192.168.73.227:5000/log_request", {
                 method: "GET",
             })
                 .then(response => response.json())
