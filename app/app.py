@@ -152,8 +152,7 @@ def receive_log():
             cursor = connection.cursor()
 
             data = request.get_json()
-            tex = Log.parse(data)
-            print(tex.serialize())
+
             # Extract relevant information from the posted data
             dht_data = data.get("dht", {})
             temperature = dht_data.get("temperature")
@@ -161,7 +160,8 @@ def receive_log():
 
             attic_status = data.get("attic")
             rain_status = data.get("rain")
-
+            log = Log(dht_dict=dht_data, attic=attic_status, rain=rain_status)
+            print(log.serialize())
             # Respond with a success message
             return jsonify({"message": "Log data received successfully"})
 
