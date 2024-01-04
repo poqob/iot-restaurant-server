@@ -148,8 +148,12 @@ def color_change():
 def receive_log():
     if request.method == "POST":
         try:
-            data = request.get_json()
+            connection = get_db()
+            cursor = connection.cursor()
 
+            data = request.get_json()
+            tex = Log.parse(data)
+            print(tex.serialize())
             # Extract relevant information from the posted data
             dht_data = data.get("dht", {})
             temperature = dht_data.get("temperature")
@@ -157,9 +161,6 @@ def receive_log():
 
             attic_status = data.get("attic")
             rain_status = data.get("rain")
-
-            # Process the data as needed
-            # For example, you can store it in a database or perform other actions
 
             # Respond with a success message
             return jsonify({"message": "Log data received successfully"})
