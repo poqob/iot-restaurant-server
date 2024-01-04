@@ -59,10 +59,9 @@
                         <input id="lightsSwitch" type="checkbox" data-toggle="toggle" data-on="Lights On"
                             data-off="Lights Off" data-onstyle="success" data-offstyle="danger">
                     </div>
-                    <button id="callWaiterBtn" class="btn btn-light" onclick="callWaiter('{{mdesk["
-                        desk_rfid"]}}')">Call Waiter</button>
-                    <button id="payBtn" class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk[" desk_rfid"]}}')">Pay
-                        Receipt and Leave the Desk</button>
+                    <button class="btn btn-light" onclick="callWaiter('{{mdesk[" desk_rfid"]}}')">Call Waiter</button>
+                    <button class="btn btn-info" onclick="payReceiptAndLeave('{{mdesk[" desk_rfid"]}}')">Pay Receipt and
+                        Leave the Desk</button>
                 </div>
             </div>
         </div>
@@ -89,7 +88,7 @@
 
             // Set the initial state of the switch based on the desk data
             const lightsSwitch = $('#lightsSwitch');
-            lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status'] }});
+            lightsSwitch.bootstrapSwitch('state', {{ mdesk['led_status']? 'true' : 'false' }});
 
         // Set the initial color of the color picker based on the desk data
         const initialColor = rgbToHex({{ mdesk['red']}}, { { mdesk['green'] } }, { { mdesk['blue'] } });
@@ -156,10 +155,8 @@
             const r = (bigint >> 16) & 255;
             const g = (bigint >> 8) & 255;
             const b = bigint & 255;
-            const lightsSwitch = $('#lightsSwitch');
-            const st = lightsSwitch.bootstrapSwitch('state');
+
             return {
-                status: Number(st),
                 red: r,
                 green: g,
                 blue: b
