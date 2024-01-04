@@ -145,36 +145,7 @@ def color_change():
 
 
 # TODO: change this, flask will call esp/log and receive log data from esp.
-@app.route("/log", methods=["POST"])
-def log():
-    if request.method == "POST":
-        data = request.get_json()
-        connection = get_db()
-        cursor = connection.cursor()
-        try:
-            log = Log.parse(data)
-            timestamp = datetime.now()
-            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            if log:
-                serialized = json.dumps(data).replace('"', '""')
-
-                query = (
-                    'insert into log (log,timestamp) values ("'
-                    + serialized
-                    + '","'
-                    + time_str
-                    + '");'
-                )
-
-                cursor.execute(query)
-                connection.commit()
-                return log.serialize()
-        except sqlite3.Error as e:
-            print(e)
-            return "{error}"
-
-
-@app.route("/log", methods=["GET"])
+@app.route("/log", methods=["GET", "POST"])
 def log():
     if request.method == "GET":
         connection = get_db()
@@ -202,6 +173,31 @@ def log():
             cursor.execute("select * from log;")
             data = cursor.fetchall()
             return {"log": data}
+        except sqlite3.Error as e:
+            print(e)
+            return "{error}"
+    if request.method == "POST":
+        data = request.get_json()
+        connection = get_db()
+        cursor = connection.cursor()
+        try:
+            log = Log.parse(data)
+            timestamp = datetime.now()
+            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if log:
+                serialized = json.dumps(data).replace('"', '""')
+
+                query = (
+                    'insert into log (log,timestamp) values ("'
+                    + serialized
+                    + '","'
+                    + time_str
+                    + '");'
+                )
+
+                cursor.execute(query)
+                connection.commit()
+                return log.serialize()
         except sqlite3.Error as e:
             print(e)
             return "{error}"
