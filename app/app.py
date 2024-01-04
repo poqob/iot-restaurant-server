@@ -144,9 +144,9 @@ def color_change():
 # admin routes
 
 
-@app.route("/log_request", methods=["GET"])
+@app.route("/log", methods=["POST"])
 def log():
-    if request.method == "GET":
+    if request.method == "POST":
         connection = get_db()
         cursor = connection.cursor()
 
