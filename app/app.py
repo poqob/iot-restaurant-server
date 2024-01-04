@@ -144,63 +144,33 @@ def color_change():
 # admin routes
 
 
-# TODO: change this, flask will call esp/log and receive log data from esp.
-@app.route("/log_request", methods=["GET", "POST"])
+@app.route("/log_request", methods=["GET"])
 def log():
     if request.method == "GET":
         connection = get_db()
         cursor = connection.cursor()
+
         try:
-            request = api_esp.log()
-            log = Log.parse(request)
-            timestamp = datetime.now()
-            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            if log:
-                serialized = json.dumps(request).replace('"', '""')
+            request_data = api_esp.log()
+            log_entry = Log.parse(request_data)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                query = (
-                    'insert into log (log,timestamp) values ("'
-                    + serialized
-                    + '","'
-                    + time_str
-                    + '");'
-                )
+            if log_entry:
+                serialized_log = json.dumps(log_entry.serialize()).replace('"', '""')
 
+                query = f'INSERT INTO log (log, timestamp) VALUES ("{serialized_log}", "{timestamp}");'
                 cursor.execute(query)
                 connection.commit()
-                return log.serialize()
 
-            cursor.execute("select * from log;")
+                return jsonify(log_entry.serialize())
+
+            cursor.execute("SELECT * FROM log;")
             data = cursor.fetchall()
-            return {"log": data}
+            return jsonify({"log": data})
+
         except sqlite3.Error as e:
             print(e)
-            return "{error}"
-    if request.method == "POST":
-        data = request.get_json()
-        connection = get_db()
-        cursor = connection.cursor()
-        try:
-            log = Log.parse(data)
-            timestamp = datetime.now()
-            time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            if log:
-                serialized = json.dumps(data).replace('"', '""')
-
-                query = (
-                    'insert into log (log,timestamp) values ("'
-                    + serialized
-                    + '","'
-                    + time_str
-                    + '");'
-                )
-
-                cursor.execute(query)
-                connection.commit()
-                return log.serialize()
-        except sqlite3.Error as e:
-            print(e)
-            return "{error}"
+            return jsonify({"error": "Internal Server Error"}), 500
 
 
 # incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
@@ -213,6 +183,7 @@ def attic():
             _desk_rfid = data["desk_rfid"]
             _automatic = data["automatic_attic"]
             _post = api_esp.attic(data)
+
             return _post
 
         except any as e:
