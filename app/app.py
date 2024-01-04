@@ -145,32 +145,28 @@ def color_change():
 
 
 @app.route("/log", methods=["POST"])
-def log():
+def receive_log():
     if request.method == "POST":
-        connection = get_db()
-        cursor = connection.cursor()
-        request_data = request.get_json()
         try:
-            print(request_data)
-            log_entry = Log.parse(request_data)
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            data = request.get_json()
 
-            if log_entry:
-                serialized_log = json.dumps(log_entry.serialize()).replace('"', '""')
+            # Extract relevant information from the posted data
+            dht_data = data.get("dht", {})
+            temperature = dht_data.get("temperature")
+            humidity = dht_data.get("humidity")
 
-                query = "INSERT INTO log (log, timestamp) VALUES (?, ?);"
-                cursor.execute(query, (serialized_log, timestamp))
-                connection.commit()
+            attic_status = data.get("attic")
+            rain_status = data.get("rain")
 
-                return jsonify(log_entry.serialize())
+            # Process the data as needed
+            # For example, you can store it in a database or perform other actions
 
-            cursor.execute("SELECT * FROM log;")
-            data = cursor.fetchall()
-            return jsonify({"log": data})
+            # Respond with a success message
+            return jsonify({"message": "Log data received successfully"})
 
-        except sqlite3.Error as e:
+        except Exception as e:
             print(e)
-            return jsonify({"error": "Internal Server Error"}), 500
+            return jsonify({"error": "Invalid JSON data"}), 400  # Bad Request
 
 
 # incoming data is json object with desk_rfid(string) and attic status(0-1) fields.
