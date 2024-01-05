@@ -6,6 +6,7 @@ from models.led import RGBLED
 from models.log import Log
 from datetime import datetime
 from api.espApi import EspApi
+from models.logViewModel import LogViewModel
 import json
 
 app = Flask(__name__)
@@ -78,6 +79,20 @@ def get_desk_page(desk):
         return render_template("user_desk.html", mdesk=Mdesk(desk).serialize())
     else:
         return render_template("guest_desk.html", mdesk=Mdesk(desk).serialize())
+
+@app.route("/logs", methods=["GET"])
+def logs():
+    connection = get_db()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("select * from log;")
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template("logs.html", data=data)
+    except sqlite3.Error as e:
+        print(e)
+        return render_template("InvalidDesk.html")
 
 
 @app.route("/pay", methods=["POST"])
