@@ -6,7 +6,6 @@ from models.led import RGBLED
 from models.log import Log
 from datetime import datetime
 from api.espApi import EspApi
-from models.logViewModel import LogViewModel
 import json
 
 app = Flask(__name__)
