@@ -1,3 +1,4 @@
+# espApi.py is used to communicate with the esp8266 server.
 from models.led import RGBLED
 import requests
 

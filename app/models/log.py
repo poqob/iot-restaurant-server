@@ -1,6 +1,5 @@
+# log.py: model for log data
 from models.dht11 import DHT11
-
-
 class Log:
     def __init__(self, dht_dict, attic, rain):
         self.dht = DHT11.parse(dht_dict)

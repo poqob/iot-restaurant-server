@@ -1,4 +1,4 @@
-# dht11.py
+# dht11.py: model for DHT11 sensor data
 
 from typing import Dict
 

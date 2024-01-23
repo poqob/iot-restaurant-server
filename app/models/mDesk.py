@@ -1,3 +1,4 @@
+# mDesk.py: model for desk 
 from models.desk import Desk
 import json
 class Mdesk:

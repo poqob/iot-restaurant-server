@@ -1,3 +1,4 @@
+# led.py: model for RGB LED
 class RGBLED:
     def __init__(self, status=0, red=0, green=0, blue=0):
         self.status = status

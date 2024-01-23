@@ -212,5 +212,6 @@ def attic():
             return "{error}"
 
 
+# run the application on port 5000 and static ip address.
 if __name__ == "__main__":
     app.run(host="192.168.73.227", port=5000, debug=True)

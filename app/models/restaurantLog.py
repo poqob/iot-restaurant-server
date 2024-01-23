@@ -1,3 +1,4 @@
+# restaurantLog.py: model for restaurant log data
 class RestaurantLog:
     def __init__(self, attic):
         self.attic = attic

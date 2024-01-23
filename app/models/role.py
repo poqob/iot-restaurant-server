@@ -1,3 +1,4 @@
+# role.py: model for role
 class Role:
     def __init__(self, user_id, role_name):
         self.id = user_id
